@@ -9,7 +9,7 @@ An Apple Silicon focused variant of DiffTrainer. The desktop app provides DiffSi
 - **macOS on Apple Silicon:** technical workflows have been exercised with synthetic data and checkpoints: GUI startup, data preparation and binarization, ten MPS acoustic training updates, acoustic inference, and SOME inference. These checks confirm that the workflows run; they do not establish vocal quality, long-run training stability, or compatibility with a real corpus.
 - **Windows:** launchers and Conda recipes are organized under `platform/windows/`. The primary Windows version remains in the [official DiffTrainer repository](https://github.com/agentasteriski/DiffTrainer).
 - **Linux:** Conda recipes are available under `platform/linux/`, but this variant has not been validated on Linux.
-- **Core ML and Neural Engine:** a standalone proof of concept can convert and compare the acoustic backbone. It is not integrated into the app and still needs a compatible acoustic checkpoint for a real comparison.
+- **Core ML and Neural Engine:** the standalone proof of concept was run with a ten-step synthetic acoustic checkpoint. With CPU and Neural Engine enabled and GPU excluded, Core ML's local compute plan preferred the Neural Engine for 96 of 277 operations and the CPU for 12; 169 operations had no reported preferred device. This is a local plan estimate, not a runtime trace. It is not integrated into the app and has not been evaluated with Opencpop or a real corpus.
 - **Opencpop:** a data preparation tool and experimental training configuration are included. Training has not been validated with the corpus and a compatible checkpoint.
 
 Development examples, checkpoints, and test data are not included in the repository. The local `docs/` folder is also ignored by Git.
@@ -25,6 +25,21 @@ Install Miniconda or Anaconda, clone or extract this repository, and run `platfo
 Conda recipes are in `platform/linux/environment.yml` and `platform/linux/base_environment.yml`. Create and activate an environment using the recipe you choose, then run `python difftrainer.py` or use `./run_gui.sh` from the active environment. This variant has not yet been validated on Linux.
 
 ### macOS on Apple Silicon
+
+#### Native SwiftUI app
+
+The native macOS interface is available as a Swift package in `native/DiffTrainerNative/`. It uses the selected checkout and Python environment without bundling DiffSinger models or Python dependencies. Build and run it on macOS 14 or later:
+
+```bash
+cd native/DiffTrainerNative
+swift run
+```
+
+On first launch, choose this repository. The app looks for `.venv/bin/python3`; use **Overview → Choose…** to select another interpreter when needed. Operations run through `src/difftrainer_app/bridge.py`, which streams JSON Lines progress and results. The existing Tk interface and root launchers remain available for Windows and Linux.
+
+The native interface includes preparation, basic configuration creation, binarization, training, basic and advanced OpenUtau export, and acoustic Quick Inference. Its configuration form copies the selected acoustic or variance base YAML and sets the detected speaker datasets and binary output directory. For specialized training options, use the existing Python interface and review the generated YAML. The native app does not yet provide the Python interface's full set of advanced configuration controls or the variance-stage Quick Inference controls.
+
+The native updater currently directs users to the existing Python updater flow, whose confirmation explains that updating can replace DiffSinger files. The app does not attempt an update itself.
 
 #### Requirements
 
@@ -128,7 +143,9 @@ python tools/coreml/coreml_acoustic_poc.py \
 
 The experiment must be located at `DiffSinger/checkpoints/experiment_name`. Set the language and speaker to match the checkpoint and `.ds` file; omit `--language` and `--speaker` when those values are already present. Use `--checkpoint-step`, `--warmup`, and `--runs` to select a checkpoint and adjust measurements.
 
-This checkout does not yet have a compatible checkpoint for a real comparison. Requesting `ComputeUnit.ALL`, completing conversion, or obtaining a low numerical error does not prove that operations ran on the Neural Engine. App integration depends on comparison with real data, inspection of the execution plan, and useful performance.
+The current synthetic checkpoint and `.ds` sample can exercise this path, but they do not represent Opencpop or establish singing quality. The local run on 2026-10-21 reported a 3.670 s PyTorch CPU median and a 0.412 s Core ML median for the acoustic model call (384 frames, five measured runs after two warmups); maximum acoustic mel error was 0.00258 and mean error was 0.000459. The estimated compute plan preferred the Neural Engine for 96 operations, the CPU for 12, and reported no preferred device for 169. Core ML was configured with CPU and Neural Engine only, excluding GPU. This provides evidence that the model is eligible for ANE execution and that the local plan assigns operations to it; it is not an Instruments runtime trace. The environment also reports PyTorch 2.14.1 as untested by the installed Core ML Tools version.
+
+The official Opencpop corpus is not present in this checkout. Its download page requires a request form and email delivery, and its license permits non-commercial use under CC BY-NC-ND 4.0. Obtain access and review those terms before training on it. The corpus contains 3,756 utterances (about 5.2 hours), so keep sufficient free disk space for the archive, raw audio, binarized data, and checkpoints.
 
 ## Repository structure
 

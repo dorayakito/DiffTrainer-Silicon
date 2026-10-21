@@ -14,6 +14,7 @@ import os
 import statistics
 import sys
 import time
+import types
 from pathlib import Path
 
 
@@ -95,11 +96,23 @@ def main():
         raise SystemExit("Run this experiment on an Apple Silicon Mac with MPS available.")
 
     os.chdir(diffsinger)
+    sys.path.insert(0, str(diffsinger.parent))
     sys.path.insert(0, str(diffsinger))
+    # This checkout keeps DiffTrainer helpers under src/difftrainer_app/modules;
+    # the local DiffSinger copy imports its device helper through dt_modules.
+    sys.path.insert(0, str(diffsinger.parent / "src"))
+    from difftrainer_app.modules import device as device_module
+    dt_modules = types.ModuleType("dt_modules")
+    dt_modules.__path__ = []
+    sys.modules["dt_modules"] = dt_modules
+    sys.modules["dt_modules.device"] = device_module
     from utils.hparams import set_hparams
     from utils.infer_utils import parse_commandline_spk_mix
 
-    set_hparams(exp_name=args.experiment, print_hparams=False)
+    # DiffSinger's current set_hparams() parses sys.argv when config is empty;
+    # passing exp_name as a Python argument alone is ignored in that path.
+    sys.argv = [sys.argv[0], "--exp_name", args.experiment, "--infer"]
+    set_hparams(print_hparams=False)
     from inference.ds_acoustic import DiffSingerAcousticInfer
 
     infer = DiffSingerAcousticInfer(
@@ -168,13 +181,13 @@ def main():
         inputs=[ct.TensorType(name=name, shape=tuple(value.shape))
                 for name, value in zip(input_names, example_inputs)],
         convert_to="mlprogram",
-        compute_units=ct.ComputeUnit.ALL,
+        compute_units=ct.ComputeUnit.CPU_AND_NE,
     )
     convert_seconds = time.perf_counter() - convert_started
     converted.save(str(output))
 
     load_started = time.perf_counter()
-    converted = ct.models.MLModel(str(output), compute_units=ct.ComputeUnit.ALL)
+    converted = ct.models.MLModel(str(output), compute_units=ct.ComputeUnit.CPU_AND_NE)
     model_load_seconds = time.perf_counter() - load_started
 
     features = {name: value.numpy() for name, value in zip(input_names, example_inputs)}
@@ -188,7 +201,7 @@ def main():
     plan_summary = {"status": "unavailable; inspect the package in Xcode"}
     try:
         compute_plan = ct.models.compute_plan.MLComputePlan.load_from_path(
-            converted.get_compiled_model_path(), compute_units=ct.ComputeUnit.ALL
+            converted.get_compiled_model_path(), compute_units=ct.ComputeUnit.CPU_AND_NE
         )
         program = compute_plan.model_structure.program
         if program is not None:
@@ -285,7 +298,7 @@ def main():
         "max_absolute_error": float(difference.max()),
         "mean_absolute_error": float(difference.mean()),
         "coreml_package": str(output),
-        "compute_units_requested": "ALL (CPU, GPU, Neural Engine available)",
+        "compute_units_requested": "CPU_AND_NE (CPU and Neural Engine; GPU excluded)",
         "compute_plan": plan_summary,
     }, indent=2))
 

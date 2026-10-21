@@ -1,0 +1,43 @@
+--- a/basics/base_task.py
++++ b/basics/base_task.py
+@@ -340,14 +340,16 @@
+             shuffle_batch=True,
+             probe_and_cap_max_frames=True
+         )
++        num_workers = hparams['ds_workers']
++        loader_options = {'num_workers': num_workers, 'pin_memory': True,
++                          'persistent_workers': num_workers > 0}
++        if num_workers > 0:
++            loader_options['prefetch_factor'] = hparams['dataloader_prefetch_factor']
+         return torch.utils.data.DataLoader(
+             self.train_dataset,
+             collate_fn=self.train_dataset.collater,
+             batch_sampler=self.training_sampler,
+-            num_workers=hparams['ds_workers'],
+-            prefetch_factor=hparams['dataloader_prefetch_factor'],
+-            pin_memory=True,
+-            persistent_workers=True
++            **loader_options
+         )
+ 
+     def val_dataloader(self):
+@@ -362,13 +364,16 @@
+             disallow_empty_batch=False,
+             pad_batch_assignment=False
+         )
++        num_workers = hparams['ds_workers']
++        loader_options = {'num_workers': num_workers,
++                          'persistent_workers': num_workers > 0}
++        if num_workers > 0:
++            loader_options['prefetch_factor'] = hparams['dataloader_prefetch_factor']
+         return torch.utils.data.DataLoader(
+             self.valid_dataset,
+             collate_fn=self.valid_dataset.collater,
+             batch_sampler=sampler,
+-            num_workers=hparams['ds_workers'],
+-            prefetch_factor=hparams['dataloader_prefetch_factor'],
+-            persistent_workers=True
++            **loader_options
+         )
+ 
+     def test_dataloader(self):

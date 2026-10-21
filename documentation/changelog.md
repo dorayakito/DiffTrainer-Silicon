@@ -1,0 +1,192 @@
+# Changelog
+
+## 0.4.13
+- Move application code and resources into `src/difftrainer_app/` while retaining the root commands.
+- Move user settings to the ignored `config/guisettings.yaml`, preserving the legacy settings file during first-launch migration.
+- Update the app updater to replace application files only and preserve local models, configuration, and other data.
+
+
+## Unreleased
+- Organize Windows launchers, platform-specific environment recipes, and Opencpop/Core ML tools into purpose-specific folders. Root Windows launchers remain as compatibility bridges.
+- Keep Core ML as a standalone experiment; Opencpop training has not been validated with a compatible corpus and checkpoint.
+- Add Apple Silicon device selection, MPS-safe DiffSinger/SOME patches, macOS launchers, and a low-memory acoustic smoke-test config.
+- Fix segmented corpus filenames and terminal pause detection; add the missing `mido` dependency used by inference helpers.
+- Add a cloud dataset packaging script and improve inference command path handling and audio playback across platforms.
+- Validate synthetic corpus preparation, MPS binarization, a ten-update acoustic training smoke test, and synthetic acoustic/SOME inference. Real voice quality and OpenUtau export acceptance remain pending.
+
+## 0.4.12
+- .ds Rescue fully ignores acoustic training
+
+## 0.4.11
+- formally support attention-based relative duration predictor
+
+## 0.4.10
+- BUG/BUGFIX: updates from below 0.4.10 will be accidentally ignored. grab a fresh copy of check_update.py or change the version number in your existing difftrainer.py to 0.4.0. won't happen again for real this time.
+- attempts to auto-merge speakers with the same name before the language tag
+- .ds creation supports Harvest
+- assets/guisettings.yaml(generated at first launch) now does more than hold your language choice!
+  - branch: current options are `default` and `benchmark`. set your choice and restart, and the next time you update tools, it will select the corresponding DiffSinger branch. (benchmark branch is an experiment with no model differences, but logs training speeds to the checkpoint folder.)
+  - theme: can be any CustomTkInter compatible .json placed in the assets folder
+  - pl_trainer_devices: can be used to overwrite the default 'auto' in the base config upon updating. if you don't already know what this does, don't touch it. make sure you restart after saving changes, the value is loaded when DiffTrainer is launched.
+- extra_phonemes/merged_phoneme_groups look nicer and easier to read when manually tweaking configs
+
+## 0.4.7
+- add .ds creation to data prep tab(currently supports RMVPE and Parselmouth)
+- .ds Rescue: If prefer_ds is enabled when binarizing, copies .ds files located in a speaker's wavs folder from SlurCutter use to the correct ds folder.
+
+## 0.4.6
+- support use_dual_timestep toggle
+
+## 0.4.5
+- officially support up to CUDA 13.2 in auto_torch
+- corpus_segmenter no longer dies if it doesn't like the name of the longest file
+
+## 0.4.4
+- apparently we're going back to onnxsim again(requires updating both environment and tools)
+- fix error in config writing for basic export
+- add error handling to onnx export on adv tab
+
+## 0.4.3
+- restore mix-ln lines from rewrite
+
+## 0.4.2
+- remove wavenet check on export
+
+## 0.4.1
+- push to staging branch
+
+## 0.4.0
+- massive code rearrangement
+- single environment returns! conda requirement dropped
+- drop nnsvs_db_converter entirely in favor of corpus_segmenter and liteconvert, thank you for your service
+- binarizing/training no longer freeze the UI
+- dropping speakers at export now available
+- localization strings purged due to content now being incorrect, re-submissions welcome
+- probably a whole lot more I'm forgetting
+
+## 0.3.43
+- redirect future updates to archive
+- add folder language tag parsing
+
+## 0.3.41
+- improve handing of tagged phonemes during conversion
+- removed config edits that were already added upstream
+
+## 0.3.40
+- fix hidden size in OU configs
+- langloader loads on top!
+
+## 0.3.39
+- dummy box has become the stretch embed
+- adds CUDA 12.9 support
+- caps Torch to 2.8
+
+## 0.3.38
+- fix `use_lang_id` in dsdur/dspitch/dsvariance when using multiple languages but NOT merging phonemes
+- force alphabetical order in loading speakers
+- language list matches premade base dictionaries instead of localizations
+
+## 0.3.37
+- [turns out Torch 2.3.1 was actually the worst possible choice](https://github.com/pytorch/pytorch/issues/122085)
+- users with CUDA 11.8/12.1 should re-run setup_conda_envs.py
+- also calculate `num_spk` correctly now
+
+## 0.3.36
+- move torch in env B back to setup script instead of directly in .yml to force the CPU version
+- support "in between" CUDA versions(versions not officially supported by Pytorch but between supported versions, rounds down to the nearest supported version)
+- force creation of onnx folder
+
+## 0.3.34
+- new technically optional but recommended base env for Linux users(platform/linux/base_environment.yml, creates difftrainerBase)
+
+## 0.3.33
+- fix extra_phonemes creating a fake phoneme `['']`
+
+## 0.3.32
+- muon_lynxnet2
+  - redirect DiffSinger download
+  - change alt. backbone toggle to dropdown selection(defaults to lynxnet2)
+  - using lynxnet2 requires updating tools, can be used on older versions if lynxnet/wavenet is manually selected
+
+## 0.3.31
+- better main path(possibly fixing "amnesia" bug)
+- conda path fix for Linux
+- support CUDA 12.8, try 12.8 if higher
+  
+## 0.3.30
+- move use_note_rest to correct stage in advanced OU export
+  
+## 0.3.29
+- fix reloading datasets during configuration
+  
+## 0.3.28
+- add custom error when selecting samples so I don't have to explain ValueError every day
+
+## 0.3.27
+- fix OU exports only using first speaker for pitch
+  
+## 0.3.26
+- multidict -> main
+
+## 0.3.25
+- added CUDA 12.4 to detection in setup
+- redirect DiffSinger download to v2-backport backup
+
+## 0.3.24
+- moved set config edits to setup rather than configuration
+  - now if you edit things like smooth_width in the default config files, it won't be overwritten the next time you save that config
+ 
+## 0.3.23
+- redirect DiffSinger download to main branch
+- download pc-nsf-hifigan in addition to previous nsf-hifigan
+- split breathiness/energy toggle
+- added kitchen sink config
+
+## 0.3.18
+- automatic update will update core dependencies if needed
+- configs come out in the same order they went in
+
+## 0.3.17-ish
+- QuickInference overhaul
+
+## 0.3.14
+- added config strings to match DiffSinger update(requires running update tools)
+- updated langloader window
+  - still uses langloader/merged.yaml, just has a nicer editor
+  - it still usually pops up hidden behind the main window, sorry
+
+## 0.3.13
+- sorry I always forget to update this section
+- there's probably a few changes that should be mentioned but I forgot
+- should actually work on Linux/Mac now
+- automates merging speakers in spk_map.json
+
+## 0.3.0(multidict beta)
+- new config format for multidict setup
+- new settings files: langloader.yaml and merged.yaml
+  - langloader: fixed file name/location. editable directly in DiffTrainer. lists dictionary files and global phonemes
+  - merged: flexible file name/location(specified in langloader.yaml). lists groups of phonemes to merge
+
+## 0.2.11
+- automatic update will update dependencies if needed
+- configs come out in the same order they went in
+
+## 0.2.10
+- automatic update will require editing the old version number to 0.2.0(sorry, won't be necessary again)
+- revised basic OU export
+
+## 0.2.4
+- added backbone toggle(requires Diffsinger update 11/16/24)
+
+## 0.2.1
+- automated environment activation(environment names are now hardcoded, all users must use conda)
+
+## 0.2.0
+- started official changelog
+- switch all users to conda or self-management
+- implement split environments
+- implement SOME for pitch estimation
+- revert to main fork of Uta's converter
+- CONVERTER: all labels MUST begin and end with [SP] (sorry for the inconvenience)
+- switch default diff_accelerator to unipc
+- implement advanced export(buggy)

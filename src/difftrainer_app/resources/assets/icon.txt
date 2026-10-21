@@ -1,0 +1,4 @@
+The application windows use difftrainer-icon.png, rendered from difftrainer-icon.svg.
+hard-drive.png is a legacy asset and is no longer used as the application icon.
+https://www.zondicons.com/
+https://creativecommons.org/licenses/by/4.0/

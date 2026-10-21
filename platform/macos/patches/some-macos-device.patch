@@ -1,0 +1,19 @@
+--- a/inference/base_infer.py
++++ b/inference/base_infer.py
+@@ -4,6 +4,7 @@
+ 
+ import numpy as np
+ import torch
++from difftrainer_app.modules.device import pick_device
+ import tqdm
+ from torch import nn
+ 
+@@ -13,7 +14,7 @@
+ class BaseInference:
+     def __init__(self, config: dict, model_path: pathlib.Path, device=None):
+         if device is None:
+-            device = 'cuda' if torch.cuda.is_available() else 'cpu'
++            device = pick_device()
+         self.config = config
+         self.model_path = model_path
+         self.device = device

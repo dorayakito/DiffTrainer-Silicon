@@ -1,0 +1,26 @@
+# Smoke-test configuration for the acoustic task on Apple Silicon with 8 GB RAM.
+# Copy into DiffSinger/configs/ and edit datasets/binary_data_dir in a derived config.
+base_config:
+  - configs/acoustic.yaml
+
+pl_trainer_accelerator: mps
+pl_trainer_devices: 1
+pl_trainer_precision: 32-true
+pl_trainer_strategy:
+  name: auto
+  process_group_backend: null
+  find_unused_parameters: false
+pl_trainer_num_nodes: 1
+nccl_p2p: false
+
+ds_workers: 0
+dataloader_prefetch_factor: 1
+num_sanity_val_steps: 0
+num_valid_plots: 0
+num_ckpt_keep: 2
+val_check_interval: 10
+max_updates: 10
+max_batch_size: 1
+max_batch_frames: 12000
+max_val_batch_size: 1
+max_val_batch_frames: 12000

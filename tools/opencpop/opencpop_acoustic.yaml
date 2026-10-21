@@ -1,0 +1,30 @@
+# Training recipe for the current OpenVPI DiffSinger checkout.
+# Run scripts from inside DiffSinger; raw data stays local and is gitignored.
+base_config:
+  - configs/acoustic.yaml
+
+dictionaries:
+  zh: dictionaries/opencpop-extension.txt
+
+datasets:
+  - raw_data_dir: data/opencpop/raw
+    speaker: opencpop
+    spk_id: 0
+    language: zh
+    # The held-out song prefixes used by the public 0831 Opencpop experiment.
+    test_prefixes:
+      - '2044'
+      - '2086'
+      - '2092'
+      - '2093'
+      - '2100'
+
+binary_data_dir: data/opencpop/binary
+
+# Conservative settings for this Mac experiment. MPS training itself has not
+# yet been runtime-validated in this checkout.
+binarization_args:
+  num_workers: 0
+pl_trainer_accelerator: mps
+pl_trainer_devices: 1
+pl_trainer_precision: 32-true

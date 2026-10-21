@@ -1,0 +1,30 @@
+# macOS Apple Silicon / Python 3.14 inference and GUI environment.
+# Core ML Tools stays optional and is installed separately for the experiment.
+customtkinter
+ctkmessagebox
+ctklistbox
+ctktooltip
+ez-localizr
+mido
+plyer
+click
+einops==0.6.1
+h5py
+librosa>=0.10.2
+lightning~=2.3.0
+matplotlib
+MonkeyType>=23.3.0
+numpy>=2.2
+onnx>=1.21.0
+onnxsim>=0.6.5
+praat-parselmouth>=0.4.6
+pyworld>=0.3.5
+pyyaml
+resampy
+scipy>=1.14
+setuptools<=80.10.2
+tensorboard
+tensorboardX
+torch==2.14.1
+torchmetrics
+tqdm

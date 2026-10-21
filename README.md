@@ -4,6 +4,10 @@
 
 An Apple Silicon focused variant of DiffTrainer. The desktop app provides DiffSinger data preparation, configuration, binarization, training, quick inference, and singer export for OpenUtau. macOS and MPS support are experimental.
 
+## Multispeaker training data credits
+
+Training material for the local multispeaker experiment was provided and prepared by [VIICTOR (xiaop)](https://vsynthbr.fandom.com/pt-br/wiki/VIICTOR), and includes data for the voicebanks [Kouhi Mizuki](https://vsynthbr.fandom.com/pt-br/wiki/Kouhi_Mizuki), [Yohji](https://vsynthbr.fandom.com/pt-br/wiki/Yohji), and [Raphaello](https://vsynthbr.fandom.com/pt-br/wiki/Raphaello). We thank their creators and voice providers: Makki for Kouhi Mizuki, Oneno for Yohji, and Raphaello for the Raphaello voicebank. These acknowledgements credit the data and voicebank contributions; each voicebank remains subject to its own usage terms.
+
 ## Project status
 
 - **macOS on Apple Silicon:** technical workflows have been exercised with synthetic data and checkpoints: GUI startup, data preparation and binarization, ten MPS acoustic training updates, acoustic inference, and SOME inference. These checks confirm that the workflows run; they do not establish vocal quality, long-run training stability, or compatibility with a real corpus.
@@ -186,9 +190,5 @@ This project continues the [original DiffTrainer](https://github.com/agentasteri
 - **Icon:** a colorized `hard-drive.svg` from [Zondicons](https://www.zondicons.com/).
 
 The original credits also list these external model downloads: [pc-nsf-hifigan 44.1 kHz](https://github.com/openvpi/vocoders/releases/tag/pc-nsf-hifigan-44.1k-hop512-128bin-2025.02), [RMVPE](https://github.com/yxlllc/RMVPE/releases/tag/230917), and [hnsep_240512](https://github.com/yxlllc/vocal-remover/releases/tag/hnsep_240512). The upstream notes that many downloads are served from forks.
-
-### Multispeaker training data
-
-Training material for the local multispeaker experiment was provided and prepared by [VIICTOR (xiaop)](https://vsynthbr.fandom.com/pt-br/wiki/VIICTOR), and includes data for the voicebanks [Kouhi Mizuki](https://vsynthbr.fandom.com/pt-br/wiki/Kouhi_Mizuki), [Yohji](https://vsynthbr.fandom.com/pt-br/wiki/Yohji), and [Raphaello](https://vsynthbr.fandom.com/pt-br/wiki/Raphaello). We thank their creators and voice providers: Makki for Kouhi Mizuki, Oneno for Yohji, and Raphaello for the Raphaello voicebank. These acknowledgements credit the data and voicebank contributions; each voicebank remains subject to its own usage terms.
 
 Please review the license and usage terms for each project, font, model, and corpus. The [additional credits file](documentation/extracredits.md) is retained in this repository.
